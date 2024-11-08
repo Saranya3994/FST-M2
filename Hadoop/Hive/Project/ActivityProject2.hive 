@@ -1,0 +1,8 @@
+use office;
+drop table dialogue;
+drop table Dialogue_Final;
+CREATE TABLE dialogue (Name STRING,Dialogues STRING) ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t';
+LOAD DATA LOCAL INPATH '/root/Inputs/episodeIV_dialogues.txt' INTO TABLE dialogue;
+--CREATE TABLE Dialogue_Final AS SELECT NAME,No_Of_Dialogues FROM(SELECT Name,COUNT(1) as No_Of_Dialogues FROM(SELECT Name,Dialogues from dialogue where Dialogues LIKE "%Luke%")w group by Name)g ORDER BY No_Of_Dialogues DESC;
+CREATE TABLE Dialogue_Final AS SELECT Name,No_Of_Dialogues FROM(SELECT Name,count(1) FROM dialogue where dialgoues like '%Luke%');
+INSERT OVERWRITE DIRECTORY 'hdfs:///user/root/rashmi/pig_project/Hive_Activity2_Output' ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' SELECT * FROM Dialogue_Final;
